@@ -9,20 +9,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.ThreadContext;
-import org.springframework.web.client.RestTemplate;
 
 
 public class PortfolioManagerApplication {
@@ -46,12 +39,25 @@ public class PortfolioManagerApplication {
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
 
-     return Collections.emptyList();
+    // Trades[] trades = om.readValue(inputFile, Trade[].class);
+
+    List<String> list = new ArrayList<>();
+    PortfolioTrade[] trades = getObjectMapper().readValue(resolveFileFromResources(args[0]), PortfolioTrade[].class);
+
+    if(trades.length == 0){
+      return new ArrayList<>();
+    }
+
+    for(PortfolioTrade trade: trades){
+      System.out.println(trade.getSymbol());
+      list.add(trade.getSymbol());
+    }
+     return list;
   }
 
 
   // Note:
-  // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
+  // 1. You may needto copy relevant code from #mainReadQuotes to parse the Json.
   // 2. Remember to get the latest quotes from Tiingo API.
 
 
