@@ -10,12 +10,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+// import java.util.Map;
+// import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.web.client.RestTemplate;
 
 
 public class PortfolioManagerApplication {
@@ -64,6 +70,13 @@ public class PortfolioManagerApplication {
 
 
 
+
+
+
+
+  // TODO: CRIO_TASK_MODULE_REST_API
+  //  Find out the closing price of each stock on the end_date and return the list
+  //  of all symbols in ascending order by its close value on end date.
 
   // Note:
   // 1. You may have to register on Tiingo to get the api_token.
@@ -129,6 +142,7 @@ public class PortfolioManagerApplication {
      String lineNumberFromTestFileInStackTrace = "";
 
 
+
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
         toStringOfObjectMapper, functionNameFromTestFileInStackTrace,
         lineNumberFromTestFileInStackTrace});
@@ -137,6 +151,115 @@ public class PortfolioManagerApplication {
 
   // Note:
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
+  public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException {
+
+    List<PortfolioTrade> trades = readTradesFromJson(args[0]);
+    // File f = resolveFileFromResources(args[0]);
+    // ObjectMapper om = new ObjectMapper();
+    // PortfolioTrade[] trades = om.readValue(f, PortfolioTrade[].class);
+    List<TotalReturnsDto> totalReturns = new ArrayList<>();
+    RestTemplate restTemplate = new RestTemplate();
+    for(PortfolioTrade trade: trades){
+      String symbol = trade.getSymbol();
+      LocalDate endDate = LocalDate.parse(args[1]);
+      String url = prepareUrl(trade, endDate, "717f1e94ec7d91f4a610309c3dd9d2d22f741dca");
+      System.out.println("URL " + url);
+      TiingoCandle[] tingoApi = restTemplate.getForObject(url, TiingoCandle[].class);
+      if(tingoApi == null) continue;
+      TotalReturnsDto temp = new TotalReturnsDto(symbol, tingoApi[tingoApi.length-1].getClose());
+      totalReturns.add(temp);
+    }
+
+    Collections.sort(totalReturns, new Comparator<TotalReturnsDto>() {
+      @Override
+      public int compare(TotalReturnsDto t1, TotalReturnsDto t2){
+        return (int)(t1.getClosingPrice().compareTo(t2.getClosingPrice()));
+      }
+    });
+
+    System.out.println(totalReturns.toString());
+    List<String> result = new ArrayList<>();
+    for(TotalReturnsDto total: totalReturns){
+      
+      result.add(total.getSymbol());
+    }
+
+    return result;
+
+
+  //   List<String> result = new ArrayList<>();
+   
+  //   List<PortfolioTrade> trades = readTradesFromJson(args[0]);
+  //   System.out.println("trades"+ trades);
+    
+  //   LocalDate endDate = LocalDate.parse(args[1]);
+  //   Map<Double, String> symbolToClosingPriceMap = new TreeMap<>();
+  //   RestTemplate restTemplate = new RestTemplate();
+    
+  //   for(PortfolioTrade trade: trades){
+  //     String url = prepareUrl(trade, endDate, "717f1e94ec7d91f4a610309c3dd9d2d22f741dca");
+  //     System.out.println(url);
+  //     TiingoCandle[] tingoApi = restTemplate.getForObject(url, TiingoCandle[].class);
+  //     if(tingoApi == null) continue;
+  //     symbolToClosingPriceMap.put(tingoApi[tingoApi.length-1].getClose(), trade.getSymbol());
+      
+      
+  //   }
+  //   // for(Map<String, Double> tingo: symbolToClosingPriceMap)
+  //   // System.out.println("apiDAta"+ tingo);
+
+  //   // System.out.println(symbolToClosingPriceMap.get("AAPL"));
+
+  //   for (Double closePrice: symbolToClosingPriceMap.keySet()) {
+  //     String key = closePrice.toString();
+  //     String value = symbolToClosingPriceMap.get(closePrice).toString();
+  //     result.add(symbolToClosingPriceMap.get(closePrice).toString());
+  //     System.out.println(key + " " + value);
+  // }
+  // System.out.println("Result" + result);
+     
+  }
+
+  
+
+  // TODO:
+  //  After refactor, make sure that the tests pass by using these two commands
+  //  ./gradlew test --tests PortfolioManagerApplicationTest.readTradesFromJson
+  //  ./gradlew test --tests PortfolioManagerApplicationTest.mainReadFile
+  public static List<PortfolioTrade> readTradesFromJson(String filename) throws IOException, URISyntaxException {
+    List<PortfolioTrade> list = new ArrayList<>();
+    PortfolioTrade[] trades = getObjectMapper().readValue(resolveFileFromResources(filename), PortfolioTrade[].class);
+
+    if(trades.length == 0){
+      return new ArrayList<>();
+    }
+
+    for(PortfolioTrade trade: trades){
+      list.add(trade);
+    }
+     return list;
+  }
+  
+
+
+  // TODO:
+  //  Build the Url using given parameters and use this function in your code to cann the API.
+  // public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token) {
+  //   String url = "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol() + "/prices?token=" + token  + "&endDate=" + endDate + "&resampleFreq=monthly";
+  //    return url;
+  // }
+  
+public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token) {
+    return "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol() + "/prices?startDate=" + trade.getPurchaseDate()
+        + "&endDate=" + endDate + "&token=" + token;
+  }
+
+
+//  String url = "&startDate=2016-1-1&endDate=2016-1-1&resampleFreq=monthly";
+
+
+
+
 
 
 
@@ -144,8 +267,10 @@ public class PortfolioManagerApplication {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
 
-    printJsonObject(mainReadFile(args));
+    // printJsonObject(mainReadFile(args));
 
+
+    printJsonObject(mainReadQuotes(args));
 
 
   }

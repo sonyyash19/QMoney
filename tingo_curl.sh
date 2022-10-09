@@ -1,0 +1,1 @@
+curl https://api.tiingo.com/tiingo/daily/GOOGL/prices?token=717f1e94ec7d91f4a610309c3dd9d2d22f741dca
