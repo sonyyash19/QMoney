@@ -336,11 +336,11 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
 
-    printJsonObject(mainReadFile(args));
+    // printJsonObject(mainReadFile(args));
 
     // printJsonObject(mainReadQuotes(args));
 
-    // printJsonObject(mainCalculateSingleReturn(args));
+    printJsonObject(mainCalculateSingleReturn(args));
 
   }
 }
