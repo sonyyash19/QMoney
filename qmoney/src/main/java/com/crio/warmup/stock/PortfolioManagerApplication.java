@@ -247,6 +247,9 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
   // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
   // 2. Remember to get the latest quotes from Tiingo API.
 
+  public static String getToken(){
+    return "717f1e94ec7d91f4a610309c3dd9d2d22f741dca";
+  }
 
 
 
@@ -290,9 +293,8 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
 
         for(PortfolioTrade trade: trades){
           LocalDate endDate = LocalDate.parse(args[1]);
-          final String token = "717f1e94ec7d91f4a610309c3dd9d2d22f741dca";
           
-          List<Candle> candles = fetchCandles(trade, endDate, token);
+          List<Candle> candles = fetchCandles(trade, endDate, getToken());
 
           double openingPriceOnPurchaseDate = getOpeningPriceOnStartDate(candles);
           double closingPrice = getClosingPriceOnEndDate(candles);
@@ -301,10 +303,11 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
         
     }
 
-    annualizedReturns = annualizedReturns.stream().sorted((o1, o2) -> o2.getAnnualizedReturn().compareTo(o1.getAnnualizedReturn())).collect(Collectors.toList());
-    System.out.println(annualizedReturns);
+     return sortAnnialAnnualizedReturnsInDescendingorder(annualizedReturns);
+  }
 
-     return annualizedReturns;
+  public static List<AnnualizedReturn> sortAnnialAnnualizedReturnsInDescendingorder(List<AnnualizedReturn> annualizedReturns){
+    return annualizedReturns.stream().sorted((o1, o2) -> o2.getAnnualizedReturn().compareTo(o1.getAnnualizedReturn())).collect(Collectors.toList());;
   }
 
   // TODO: CRIO_TASK_MODULE_CALCULATIONS
