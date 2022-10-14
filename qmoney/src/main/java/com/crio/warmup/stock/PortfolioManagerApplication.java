@@ -307,7 +307,7 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
   }
 
   public static List<AnnualizedReturn> sortAnnialAnnualizedReturnsInDescendingorder(List<AnnualizedReturn> annualizedReturns){
-    return annualizedReturns.stream().sorted((o1, o2) -> o2.getAnnualizedReturn().compareTo(o1.getAnnualizedReturn())).collect(Collectors.toList());;
+    return annualizedReturns.stream().sorted((o1, o2) -> o2.getAnnualizedReturn().compareTo(o1.getAnnualizedReturn())).collect(Collectors.toList());
   }
 
   // TODO: CRIO_TASK_MODULE_CALCULATIONS
