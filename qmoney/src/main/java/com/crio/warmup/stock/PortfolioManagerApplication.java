@@ -4,6 +4,8 @@ package com.crio.warmup.stock;
 
 import com.crio.warmup.stock.dto.*;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
+import com.crio.warmup.stock.portfolio.PortfolioManager;
+import com.crio.warmup.stock.portfolio.PortfolioManagerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -16,8 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-// import java.util.Map;
-// import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.nio.file.Files;
@@ -335,6 +335,26 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
       return new AnnualizedReturn(trade.getSymbol(), annualizedReturns, totalReturns);
   }
 
+  // TODO: CRIO_TASK_MODULE_REFACTOR
+  //  Once you are done with the implementation inside PortfolioManagerImpl and
+  //  PortfolioManagerFactory, create PortfolioManager using PortfolioManagerFactory.
+  //  Refer to the code from previous modules to get the List<PortfolioTrades> and endDate, and
+  //  call the newly implemented method in PortfolioManager to calculate the annualized returns.
+
+  // Note:
+  // Remember to confirm that you are getting same results for annualized returns as in Module 3.
+
+  public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args)
+      throws Exception {
+       String file = args[0];
+       LocalDate endDate = LocalDate.parse(args[1]);
+       List<PortfolioTrade> portfolioTrades = readTradesFromJson(file);
+      //  ObjectMapper objectMapper = getObjectMapper();
+       RestTemplate restTemplate = new RestTemplate();
+       return PortfolioManagerFactory.getPortfolioManager(restTemplate).calculateAnnualizedReturn(portfolioTrades, endDate);
+  }
+
+
   public static void main(String[] args) throws Exception {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
@@ -343,8 +363,12 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
 
     // printJsonObject(mainReadQuotes(args));
 
-    printJsonObject(mainCalculateSingleReturn(args));
+    // printJsonObject(mainCalculateSingleReturn(args));
 
+
+
+
+    printJsonObject(mainCalculateReturnsAfterRefactor(args));
   }
 }
 

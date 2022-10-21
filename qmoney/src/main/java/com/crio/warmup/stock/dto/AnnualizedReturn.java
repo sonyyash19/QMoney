@@ -24,12 +24,4 @@ public class AnnualizedReturn {
   public Double getTotalReturns() {
     return totalReturns;
   }
-
-  @Override
-  public String toString() {
-    return "AnnualizedReturn [annualizedReturn=" + annualizedReturn + ", symbol=" + symbol
-        + ", totalReturns=" + totalReturns + "]";
-  }
-
-  
 }
