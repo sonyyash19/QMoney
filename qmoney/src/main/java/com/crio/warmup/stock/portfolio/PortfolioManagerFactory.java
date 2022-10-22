@@ -14,8 +14,4 @@ public class PortfolioManagerFactory {
     PortfolioManager portfolioManager = new PortfolioManagerImpl(restTemplate);
      return portfolioManager;
   }
-
-
-
-
 }
