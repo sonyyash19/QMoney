@@ -99,14 +99,14 @@ public class PortfolioManagerImpl implements PortfolioManager {
           double openingPriceOnPurchaseDate = candle.get(0).getOpen();
           double closingPrice = candle.get(candle.size() - 1).getClose();
 
-          annualizedReturns.add(calculateAnnualizedReturns(endDate, trade, openingPriceOnPurchaseDate, closingPrice));
+          annualizedReturns.add(calculateSingleTradeAnnualizedReturns(endDate, trade, openingPriceOnPurchaseDate, closingPrice));
         
     }
         
     return annualizedReturns.stream().sorted((o1, o2) -> o2.getAnnualizedReturn().compareTo(o1.getAnnualizedReturn())).collect(Collectors.toList());
   }
 
-  private static AnnualizedReturn calculateAnnualizedReturns(LocalDate endDate,
+  private static AnnualizedReturn calculateSingleTradeAnnualizedReturns(LocalDate endDate,
       PortfolioTrade trade, Double buyPrice, Double sellPrice) {
 
       // double totalNumberYears = trade.getPurchaseDate().until(endDate, ChronoUnit.DAYS)/365.24; //alternate way to calculate the year
