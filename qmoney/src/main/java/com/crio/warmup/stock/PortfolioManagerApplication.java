@@ -169,7 +169,6 @@ public class PortfolioManagerApplication {
       String symbol = trade.getSymbol();
       LocalDate endDate = LocalDate.parse(args[1]);
       String url = prepareUrl(trade, endDate, "717f1e94ec7d91f4a610309c3dd9d2d22f741dca");
-      System.out.println("URL " + url);
       TiingoCandle[] tingoApi = restTemplate.getForObject(url, TiingoCandle[].class);
       if(tingoApi == null) continue;
       TotalReturnsDto temp = new TotalReturnsDto(symbol, tingoApi[tingoApi.length-1].getClose());
@@ -183,7 +182,6 @@ public class PortfolioManagerApplication {
       }
     });
 
-    System.out.println(totalReturns.toString());
     List<String> result = new ArrayList<>();
     for(TotalReturnsDto total: totalReturns){
       
@@ -360,8 +358,6 @@ public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String 
     // printJsonObject(mainReadQuotes(args));
 
     // printJsonObject(mainCalculateSingleReturn(args));
-
-
 
 
     printJsonObject(mainCalculateReturnsAfterRefactor(args));
