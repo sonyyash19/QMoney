@@ -57,9 +57,8 @@ class TiingoServiceTest {
   @Test
   @MockitoSettings(strictness = Strictness.LENIENT)
   void getStockQuoteSingle() throws Exception {
-    // JSONObject jsonObject = new JSONObject(jsonString);
     Mockito.doReturn(sampleTiingoResponse)
-        .when(restTemplate).getForObject(anyString(), any());
+        .when(restTemplate).getForObject(anyString(), eq(String.class));
 
     List<Candle> candles = tiingoService.getStockQuote("GOOGL",LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-04"));
 
