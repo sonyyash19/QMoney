@@ -39,7 +39,7 @@ public class AlphavantageService implements StockQuotesService {
   }
 
   @Override
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException {
 
 
     String responseString = restTemplate.getForObject(createUrl(symbol), String.class);
@@ -53,18 +53,10 @@ public class AlphavantageService implements StockQuotesService {
       alphavantageDailyResponse =
           objectMapper.readValue(responseString, AlphavantageDailyResponse.class);
       if (alphavantageDailyResponse.getCandles() == null || responseString == null) {
-        try {
-          throw new StockQuoteServiceException("Invalid Response Found");
-        } catch (StockQuoteServiceException e) {
-          e.printStackTrace();
-        }
+        throw new StockQuoteServiceException("Invalid Response Found");
       }
     } catch (JsonProcessingException e) {
-      try {
-        throw new StockQuoteServiceException(e.getMessage());
-      } catch (StockQuoteServiceException e1) {
-        e1.printStackTrace();
-      }
+      throw new StockQuoteServiceException(e.getMessage());
     }
     List<Candle> alphavantageCandles = new ArrayList<>();
     Map<LocalDate, AlphavantageCandle> mapOFDateAndAlphavantageCandle =
@@ -82,5 +74,15 @@ public class AlphavantageService implements StockQuotesService {
 
   }
 }
+
+
+  // TODO: CRIO_TASK_MODULE_EXCEPTIONS
+  //   1. Update the method signature to match the signature change in the interface.
+  //   2. Start throwing new StockQuoteServiceException when you get some invalid response from
+  //      Alphavantage, or you encounter a runtime exception during Json parsing.
+  //   3. Make sure that the exception propagates all the way from PortfolioManager, so that the
+  //      external user's of our API are able to explicitly handle this exception upfront.
+  //CHECKSTYLE:OFF
+
 
 

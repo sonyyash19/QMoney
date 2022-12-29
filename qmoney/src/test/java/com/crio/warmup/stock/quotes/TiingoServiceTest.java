@@ -16,15 +16,12 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -60,7 +57,9 @@ class TiingoServiceTest {
     Mockito.doReturn(sampleTiingoResponse)
         .when(restTemplate).getForObject(anyString(), eq(String.class));
 
-    List<Candle> candles = tiingoService.getStockQuote("GOOGL",LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-04"));
+    List<Candle> candles = tiingoService
+        .getStockQuote("GOOGL",
+            LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-04"));
 
     assertEquals(candles.get(0).getOpen(), 1027.2, 0.3);
 

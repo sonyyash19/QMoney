@@ -72,7 +72,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   //  Remember to fill out the buildUri function and use that.
 
 
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException {
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException, StockQuoteServiceException {
     //      String url= buildUri(symbol, from , to);
      
     //  TiingoCandle[] tiingoresult=restTemplate.getForObject(url, TiingoCandle[].class);

@@ -1,8 +1,8 @@
-
 package com.crio.warmup.stock.quotes;
 
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +39,7 @@ public class TiingoService implements StockQuotesService {
 
   @Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException {
+      throws JsonProcessingException, StockQuoteServiceException {
         ObjectMapper objMapper = new ObjectMapper();
         objMapper.registerModule(new JavaTimeModule());
 
@@ -48,15 +48,19 @@ public class TiingoService implements StockQuotesService {
         String tingoCandle = restTemplate.getForObject(url, String.class);
         try {
           candleObj = objMapper.readValue(tingoCandle, TiingoCandle[].class);
+
+          if(candleObj == null || tingoCandle == null){
+            throw new StockQuoteServiceException("INVALID RESPONSE FOUND");
+          }
         } catch (JsonMappingException e) {
-          e.printStackTrace();
+          throw new StockQuoteServiceException(e.getMessage());
         } catch(JsonProcessingException e){
-          e.printStackTrace();
+          throw new StockQuoteServiceException(e.getMessage());
         }
 
-        if(candleObj == null){
-          return new ArrayList<>();
-        }
+        // if(candleObj == null){
+        //   return new ArrayList<>();
+        // }
 
      return Arrays.asList(candleObj);
   }
