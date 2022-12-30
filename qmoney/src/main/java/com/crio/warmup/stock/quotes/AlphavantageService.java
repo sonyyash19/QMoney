@@ -19,29 +19,31 @@ import org.springframework.web.client.RestTemplate;
 
 public class AlphavantageService implements StockQuotesService {
 
-
-
-  RestTemplate restTemplate = new RestTemplate();
-  AlphavantageDailyResponse alphadailyres;
+  private RestTemplate restTemplate;
+  // AlphavantageDailyResponse alphadailyres;
 
   public AlphavantageService(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 
   String getAPI() {
-    return "0K4LCXEQZW4RSEE6";
+    // return "0K4LCXEQZW4RSEE6";
+    return "8XAUYK0BEJIZJ3PK";
   }
 
   String createUrl(String symbol) {
 
-    return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol
+    // return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol
+    //     + "&outputsize=full&apikey=" + getAPI();
+
+    return "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + symbol
         + "&outputsize=full&apikey=" + getAPI();
   }
 
   @Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException {
 
-
+    // System.out.println(createUrl(symbol));
     String responseString = restTemplate.getForObject(createUrl(symbol), String.class);
     // System.out.println(responseString);
 
