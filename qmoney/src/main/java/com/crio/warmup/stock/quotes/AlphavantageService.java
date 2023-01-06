@@ -1,7 +1,5 @@
 package com.crio.warmup.stock.quotes;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import com.crio.warmup.stock.dto.AlphavantageCandle;
 import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
 import com.crio.warmup.stock.dto.Candle;
@@ -43,9 +41,7 @@ public class AlphavantageService implements StockQuotesService {
   @Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws StockQuoteServiceException {
 
-    // System.out.println(createUrl(symbol));
     String responseString = restTemplate.getForObject(createUrl(symbol), String.class);
-    // System.out.println(responseString);
 
     AlphavantageDailyResponse alphavantageDailyResponse = null;
     try {

@@ -8,11 +8,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 public class TiingoService implements StockQuotesService {
@@ -57,10 +54,6 @@ public class TiingoService implements StockQuotesService {
         } catch(JsonProcessingException e){
           throw new StockQuoteServiceException(e.getMessage());
         }
-
-        // if(candleObj == null){
-        //   return new ArrayList<>();
-        // }
 
      return Arrays.asList(candleObj);
   }

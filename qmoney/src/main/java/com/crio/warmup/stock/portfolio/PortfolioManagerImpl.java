@@ -1,21 +1,15 @@
 package com.crio.warmup.stock.portfolio;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
-import com.crio.warmup.stock.dto.TiingoCandle;
 import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,12 +17,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerImpl implements PortfolioManager {
-
 
   private RestTemplate restTemplate;
   private StockQuotesService stockQuotesService;
@@ -70,35 +62,8 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
       throws JsonProcessingException, StockQuoteServiceException {
-    // String url= buildUri(symbol, from , to);
-
-    // TiingoCandle[] tiingoresult=restTemplate.getForObject(url, TiingoCandle[].class);
-
-    // if(tiingoresult!=null)
-    // return Arrays.stream(tiingoresult).collect(Collectors.toList());
-    // return new ArrayList<Candle>();
-
     return stockQuotesService.getStockQuote(symbol, from, to);
   }
-
-
-  protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
-    String uriTemplate = "https://api.tiingo.com/tiingo/daily/$SYMBOL/prices?"
-        + "startDate=$STARTDATE&endDate=$ENDDATE&token=$APIKEY";
-    return uriTemplate;
-  }
-
-
-
-  public static String getToken() {
-    return "717f1e94ec7d91f4a610309c3dd9d2d22f741dca";
-  }
-
-  // protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
-  // return "https://api.tiingo.com/tiingo/daily/" + symbol + "/prices?startDate=" + startDate
-  // + "&endDate=" + endDate + "&token=" + getToken();
-  // }
-
 
   private Double getOpeningPriceOnStartDate(List<Candle> candles) {
     return candles.get(0).getOpen();
@@ -176,39 +141,6 @@ public class PortfolioManagerImpl implements PortfolioManager {
   
   }
 
-
-  // @Override
-  // public List<AnnualizedReturn> calculateAnnualizedReturnParallel(
-  //     List<PortfolioTrade> portfolioTrades, LocalDate endDate, int numThreads)
-  //     throws InterruptedException, StockQuoteServiceException, JsonProcessingException {
-  //   ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-
-  //   List<Future<AnnualizedReturn>> responses = portfolioTrades.stream().map(portfolioTrade -> 
-  //   executorService.submit(() -> {
-  //     List<Candle> candles;
-  //     candles =
-  //         getStockQuote(portfolioTrade.getSymbol(), portfolioTrade.getPurchaseDate(), endDate);
-  //     AnnualizedReturn annualizedReturn = calculateAnnualizedReturns(endDate, portfolioTrade,
-  //     getOpeningPriceOnStartDate(candles), getClosingPriceOnEndDate(candles));
-
-  //     return annualizedReturn;
-  //   })).collect(Collectors.toList());
-
-    
-  //   List<AnnualizedReturn> annualizedReturns = new ArrayList<>();
-    
-  //   responses.forEach(response -> {
-  //     try {
-  //       annualizedReturns.add(response.get());
-  //     } catch (InterruptedException e) {
-  //       throw new StockQuoteServiceException(e.getMessage());
-  //     } catch (ExecutionException e) {
-  //       e.printStackTrace();
-  //     } 
-  //   });
-    
-  //   return annualizedReturns.stream().sorted(getComparator()).collect(Collectors.toList());
-  // }
 
   class ThreadHandler implements Callable<AnnualizedReturn>{
 
